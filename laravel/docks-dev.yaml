@@ -1,0 +1,50 @@
+version: "3"
+services:
+  # データベースサーバー
+  mysql:
+    container_name: laravelApp_dev.mysql
+    image: mysql:5.6
+    environment:
+      MYSQL_DATABASE: laravelApp
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 4306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - default
+
+  # アプリケーションサーバー
+  app:
+    container_name: laravelApp_dev.app
+    build:
+      context: ./docker/app
+      dockerfile: Dockerfile.dev
+    image: php:laravelApp_dev
+    volumes:
+      - ./code:/code
+    working_dir: /code
+    ports:
+      - 8000:8000
+    # READMEが全て終わったら外して再up
+    # command: php artisan serve --host=0.0.0.0 --port=8000
+    networks:
+      - default
+    depends_on:
+      - mysql
+
+
+
+# defaultのネットワークを使用
+# docker-composeで構築した際に、[プロジェクト名]_defaultが自動生成される
+networks:
+  default:
+      external: false
+
+# プロジェクト毎にボリュームを作成する場合
+# [プロジェクト名]_mysql-dataが生成される
+volumes:
+  mysql-data:
+      external: false
