@@ -1,0 +1,47 @@
+version: "3"
+services:
+  mysql:
+    container_name: djangoApp.mysql
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: djangoApp
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 4306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - default
+
+  python:
+    container_name: djangoApp.python
+    build:
+      context: ./docker/django
+      dockerfile: Dockerfile.dev
+    image: django
+    environment:
+      MYSQL_DATABASE: djangoApp
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./code:/code
+    networks:
+      - default
+    ports:
+      - 8000:8000
+    working_dir: /code
+    command: python3 manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - mysql
+
+
+networks:
+  default:
+    external: false
+
+volumes:
+  mysql-data:
+    external: false
