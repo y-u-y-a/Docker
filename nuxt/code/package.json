@@ -1,0 +1,17 @@
+{
+  "name": "code",
+  "version": "1.0.0",
+  "description": "My top-notch Nuxt.js project",
+  "author": "y-u-y-a",
+  "private": true,
+  "scripts": {
+    "dev": "HOST=0.0.0.0 PORT=3000 nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate"
+  },
+  "dependencies": {
+    "nuxt": "^2.0.0"
+  },
+  "devDependencies": {}
+}

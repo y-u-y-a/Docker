@@ -1,0 +1,21 @@
+version: "3"
+services:
+  app:
+    container_name: nuxtApp.app
+    build:
+      context: ./docker/nuxt
+    image: nuxt
+    volumes:
+      - ./code:/code
+    ports:
+      - 3000:3000
+    working_dir: /code
+    command: npm run dev
+
+volumes:
+  node-packages:
+    external: false
+
+networks:
+  default:
+    external: false
