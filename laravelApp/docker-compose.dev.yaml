@@ -1,0 +1,72 @@
+version: "3"
+services:
+  # データベースサーバー
+  mysql:
+    container_name: laravelApp_dev_mysql
+    build:
+      context: ./build/dev/app
+      dockerfile: Dockerfile
+    environment:
+      MYSQL_DATABASE: laravelApp
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 4306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - default
+
+  # アプリケーションサーバー
+  app:
+    container_name: laravelApp_dev_app
+    build:
+      context: ./build/dev/app
+      dockerfile: Dockerfile
+    image: php:laravelApp
+    volumes:
+      - ./code:/var/www/html
+    networks:
+      - default
+    depends_on:
+      - mysql
+
+# ウェブサーバー
+  nginx:
+    container_name: laravelApp_dev_nginx
+    build:
+      context: ./build/dev/nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ./build/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./code:/var/www/html
+    ports:
+      - 8000:80
+    networks:
+      - default
+    depends_on:
+      - app
+
+
+# defaultのネットワークを使用
+# docker-composeで構築した際に、[プロジェクト名]_defaultが自動生成される
+networks:
+  default:
+      external: false
+
+# プロジェクト毎にボリュームを作成する場合
+# [プロジェクト名]_mysql-dataが生成される
+volumes:
+  mysql-data:
+      external: false
+
+# デフォルトだと無名のVolume(データの永続化領域)が生成してしまうので明示
+# servicesで指定するvolumes(バインドマウント)とは無関係
+# external:で外部で作成しているプロジェクト用MySQLのボリュームを指定
+# dooker downで削除しても消えない
+# (既存のボリュームを指定する場合)
+# volumes:
+#     mysql-data:
+#         external:
+#             name: project-mysql
