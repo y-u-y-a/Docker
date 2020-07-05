@@ -1,5 +1,6 @@
 
-プロジェクト構築
+================================================
+# プロジェクト・コンテナ構築(ローカル)
 ================================================
 
 ## 1. Laravel内に.envを作成・編集
@@ -7,7 +8,7 @@
 
 ```
 APP_NAME=laravelApp
-・・・
+：
 DB_CONNECTION=mysql
 DB_HOST=mysql
 DB_PORT=3306
@@ -23,25 +24,26 @@ DB_PASSWORD=root
 
 
 ## 2. コンテナを作成・起動
-    $ docker-compose up -d
+    $ docker-compose -f [ docker-composeファイル名 ] up -d
 
 
-## 3. シェルスクリプト(settings.sh)を実行
-    $ chmod 755 docker/settings.sh
-    $ docker/settings.sh
+## 3. シェルスクリプト(setup.sh)を実行
+    $ chmod 755 ./build/dev/setup.sh
+    $ ./build/dev/setup.sh
 
 * composer install
-→ /vendorが生成し、ライブラリがインストールされる
+→ /vendorが生成し、ライブラリがインストール
 * php artisan key:generate
-→ .envにAPP_KEYが生成される
+→ .envにAPP_KEYが生成
 * npm install
-→ /node_modulesが生成し、package.jsonを参考にライブラリがインストールされる
+→ /node_modulesが生成し、package.jsonを参考にライブラリがインストール
 
 ## 4. ブラウザで起動しているか確認
 localhost:8000にアクセス
 
 
-その他Tips
+================================================
+# その他Tips
 ================================================
 
 ## エラーが出た場合
@@ -54,7 +56,8 @@ localhost:8000にアクセス
 → migrateなど
 
 
-生成するもの
+================================================
+# docker-composeで生成するもの
 ================================================
 
 ## 1. コンテナ各群(container)

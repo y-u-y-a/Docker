@@ -1,13 +1,19 @@
 version: "3"
 services:
   # アプリケーションサーバー
-  app:
-    container_name: laravelApp_app
+  backend:
+    container_name: laravelApp_backend
     build:
-      context: ./build/prod/app
+      context: ./build/prod/backend
       dockerfile: Dockerfile
     volumes:
       - ./code:/var/www/html
+  # frontend:
+  #   container_name: laravelApp_frontend
+  #   build:
+  #     context: ./build/prod/frontend
+  #     dockerfile: Dockerfile
+
 # ウェブサーバー
   nginx:
     container_name: laravelApp_nginx
@@ -15,9 +21,9 @@ services:
       context: ./build/prod/nginx
       dockerfile: Dockerfile
     volumes:
-      - ./build/dev/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./build/prod/nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./code:/var/www/html
     ports:
       - 8000:80
     depends_on:
-      - app
+      - backend
