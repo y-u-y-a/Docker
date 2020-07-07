@@ -1,0 +1,37 @@
+version: '3'
+services:
+  # データベースサーバー
+  mysql:
+    container_name: phpApp_mysql
+    build:
+      context: ./build/mysql
+      dockerfile: Dockerfile
+    ports:
+      - 3406:3306
+    volumes:
+      - ./build/mysql/data:/var/lib/mysql
+
+  # バックエンド
+  backend:
+    container_name: phpApp_backend
+    build:
+      context: ./build/backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./build/www/html:/var/www/html
+    depends_on:
+      - mysql
+
+  # ウェブサーバー
+  nginx:
+    container_name: phpApp_nginx
+    build:
+      context: ./build/nginx
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    volumes:
+      - ./build/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./build/www/html:/var/www/html
+    depends_on:
+      - backend
